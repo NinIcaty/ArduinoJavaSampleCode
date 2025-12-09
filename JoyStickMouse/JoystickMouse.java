@@ -38,13 +38,14 @@ public class JoystickMouse {
                     // Expecting: 
                     String[] parts = line.split(",");
 
-                    if (parts.length == 3) {
+                    if (parts.length == 4) { // must be 4 for scrollBtn
                         try {
                             int joyX = Integer.parseInt(parts[0]);
                             int joyY = Integer.parseInt(parts[1]);
                             int sw   = Integer.parseInt(parts[2]);
-
-                            moveMouse(robot, joyX, joyY, sw);
+                            int scrollBtn = Integer.parseInt(parts[3]);
+// Exchange joyY and joyX to cange movement
+                            moveMouse(robot, joyY, joyX, sw, scrollBtn);
 
                         } catch (Exception e) {
                             // ignore corrupted chunks
@@ -56,11 +57,11 @@ public class JoystickMouse {
     }
 
 
-    static void moveMouse(Robot robot, int joyX, int joyY, int sw) {
+    static void moveMouse(Robot robot, int joyX, int joyY, int sw, int scrollBtn) {
 
         int center = 512;  // joystick center
         int deadZone = 50; // ignore small movement
-        int speed = 10;     // larger = slower cursor
+        int speed = 26;     // larger = slower cursor
 
         int dx = joyX - center;
         int dy = joyY - center;
@@ -70,13 +71,15 @@ public class JoystickMouse {
 
      //invert y
         dy = dy;
-
+        dx = -1 *dx;
         // Get mouse pos
         int mx = MouseInfo.getPointerInfo().getLocation().x;
         int my = MouseInfo.getPointerInfo().getLocation().y;
 
-        // Move mouse
-        robot.mouseMove(mx + dx / speed, my + dy / speed);
+        // Move mouse only if middle click is NOT pressed
+        if (scrollBtn != 1) {
+            robot.mouseMove(mx + dx / speed, my + dy / speed);
+        }
 
         // ---------------------------
         //  Click 
@@ -91,6 +94,16 @@ public class JoystickMouse {
         if (sw == 0) {
             robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
             robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        }
+        // -------------------------
+        // SCROLL (D3) – proportional to joystick Y
+        // -------------------------
+        if (scrollBtn == 1) { // HIGH = pressed
+            if (dy != 0) {
+              //  robot.mouseWheel(dy / speed);
+            robot.mousePress(InputEvent.BUTTON2_DOWN_MASK);
+            robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
+            }
         }
     }
 }
