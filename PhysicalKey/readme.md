@@ -1,10 +1,11 @@
-Run:
+## Run:
 java -cp ".;.\jSerialComm-2.11.4.jar" ArduinoKeyApp
-Compile:
+## Compile:
 javac -cp ".;.\jSerialComm-2.11.4.jar" ArduinoKeyApp.java
-Run Vault:
+## Run Vault:
 java -cp ".;.\jSerialComm-2.11.4.jar" PasswordVault
-Compile Vault:
+## Compile Vault:
 javac -cp ".;.\jSerialComm-2.11.4.jar" PasswordVault.java
-Made by:
+# Made by:
+
 @NiniCaty On GitHub
